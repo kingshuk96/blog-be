@@ -15,6 +15,12 @@ async function bootstrap() {
   SwaggerModule.setup('api/docs', app, document);
 
   await app.listen(3000);
-  console.log(`Application is running on: ${await app.getUrl()}`);
+  console.log(`\nApplication is running on: ${await app.getUrl()}`);
+  console.log('\n--- APIs ---');
+  Object.keys(document.paths).forEach((path) => {
+    Object.keys(document.paths[path]).forEach((method) => {
+      console.log(`[${method.toUpperCase()}] ${path}`);
+    });
+  });
 }
 bootstrap();
