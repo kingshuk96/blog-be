@@ -1,0 +1,131 @@
+// This is your Prisma schema file for MongoDB
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator zod {
+  provider                         = "zod-prisma-types"
+  output                           = "../src/generated/zod"
+  useMultipleFiles                 = false
+  writeBarrelFiles                 = true
+  createInputTypes                 = true
+  createModelTypes                 = true
+  addInputTypeValidation           = true
+  addIncludeType                   = true
+  addSelectType                    = true
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────────
+
+enum Role {
+  admin
+  user
+}
+
+enum ImageType {
+  thumbnail
+  cover
+}
+
+// ─────────────────────────────────────────────
+// MODELS
+// ─────────────────────────────────────────────
+
+model Users {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  fName     String
+  lName     String
+  uuid      String    @unique @default(uuid())
+  email     String    @unique
+  isActive  Boolean   @default(true)
+  deletedAt DateTime?
+  role      Role      @default(user)
+  lastLogin DateTime?
+  password  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  posts    Post[]
+  comments Comment[]
+  likes    Like[]
+
+  @@map("users")
+}
+
+model Post {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  tags        String[]
+  authorId    String   @db.ObjectId
+  author      Users    @relation(fields: [authorId], references: [id])
+  isPublished Boolean  @default(false)
+  isDeleted   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  content  Content?
+  images   Image[]
+  comments Comment[]
+  likes    Like[]
+
+  @@map("posts")
+}
+
+model Content {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  context   String
+  postId    String   @unique @db.ObjectId
+  post      Post     @relation(fields: [postId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("contents")
+}
+
+model Image {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  postId    String    @db.ObjectId
+  post      Post      @relation(fields: [postId], references: [id])
+  type      ImageType @default(thumbnail)
+  imgUrl    String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("images")
+}
+
+model Comment {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  postId          String   @db.ObjectId
+  post            Post     @relation(fields: [postId], references: [id])
+  userId          String   @db.ObjectId
+  user            Users    @relation(fields: [userId], references: [id])
+  parentCommentId String?  @db.ObjectId
+  context         String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("comments")
+}
+
+model Like {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  postId    String   @db.ObjectId
+  post      Post     @relation(fields: [postId], references: [id])
+  userId    String   @db.ObjectId
+  user      Users    @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([postId, userId])
+  @@map("likes")
+}
