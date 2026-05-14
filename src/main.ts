@@ -8,6 +8,8 @@ import { ENV } from './config/env.config';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.setGlobalPrefix('api/v1');
+
   const config = new DocumentBuilder()
     .setTitle('Blog Backend API')
     .setDescription('The blog backend API documentation')

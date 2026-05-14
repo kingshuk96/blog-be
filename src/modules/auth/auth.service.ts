@@ -2,7 +2,9 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
+  UnauthorizedException,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../../prisma/prisma.service';
 import { SignupDto } from './dto/signup.dto';
@@ -18,7 +20,10 @@ import { SignupDto } from './dto/signup.dto';
 export class AuthService {
   // NestJS automatically injects PrismaService here
   // because PrismaModule is marked @Global()
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService
+  ) {}
 
   async signup(dto: SignupDto) {
     // 1. Check if email already exists
@@ -50,15 +55,61 @@ export class AuthService {
       throw new InternalServerErrorException('Could not create user');
     }
 
-    // 4. Return a safe response — NEVER return the password
+    // 4. Sign a JWT — payload contains non-sensitive identifiers only
+    const payload = { sub: user.uuid, email: user.email, role: user.role };
+    const access_token = this.jwtService.sign(payload);
+
+    // 5. Return user info + token — NEVER return the password
     return {
-      id: user.id,
-      uuid: user.uuid,
-      fName: user.fName,
-      lName: user.lName,
-      email: user.email,
-      role: user.role,
-      createdAt: user.createdAt,
+      user: {
+        id: user.id,
+        uuid: user.uuid,
+        fName: user.fName,
+        lName: user.lName,
+        email: user.email,
+        role: user.role,
+        createdAt: user.createdAt,
+      },
+      access_token,
+    };
+  }
+
+  async login(email: string, password: string) {
+    const existing = await this.prisma.users.findUnique({
+      where: { email },
+    });
+
+    if (!existing) {
+      throw new ConflictException('An account with this email already exists');
+    }
+
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      existing.password as string
+    );
+
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const payload = {
+      sub: existing.uuid,
+      email: existing.email,
+      role: existing.role,
+    };
+    const access_token = this.jwtService.sign(payload);
+
+    return {
+      user: {
+        id: existing.id,
+        uuid: existing.uuid,
+        fName: existing.fName,
+        lName: existing.lName,
+        email: existing.email,
+        role: existing.role,
+        createdAt: existing.createdAt,
+      },
+      access_token,
     };
   }
 }

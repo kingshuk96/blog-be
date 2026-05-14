@@ -3,6 +3,7 @@ import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { SignupDto, SignupSchema } from './dto/signup.dto';
 import { ZodValidationPipe } from '../../pipes/zod-validation.pipe';
+import { LoginDto } from './dto/login.dto';
 
 /**
  * AuthController maps HTTP routes to AuthService methods.
@@ -44,5 +45,21 @@ export class AuthController {
   @ApiResponse({ status: 409, description: 'Email already in use' })
   signup(@Body(new ZodValidationPipe(SignupSchema)) dto: SignupDto) {
     return this.authService.signup(dto);
+  }
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Login a user account' })
+  @ApiBody({
+    schema: {
+      example: {
+        email: 'john.doe@example.com',
+        password: 'Secret123',
+      },
+    },
+  })
+  @ApiResponse({ status: 200, description: 'User logged in successfully' })
+  @ApiResponse({ status: 401, description: 'Invalid credentials' })
+  login(@Body() dto: LoginDto) {
+    return this.authService.login(dto.email, dto.password);
   }
 }
