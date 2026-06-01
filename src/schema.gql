@@ -1,0 +1,49 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Query {
+  """Returns all active users. Requires a valid JWT."""
+  getUsers: [UserModel!]!
+}
+
+"""The role of the user in the system"""
+enum Role {
+  admin
+  user
+}
+
+"""Represents a user in the system"""
+type UserModel {
+  """When the account was created"""
+  createdAt: DateTime!
+
+  """Email address"""
+  email: String!
+
+  """First name"""
+  fName: String!
+
+  """MongoDB ObjectId"""
+  id: ID!
+
+  """Whether the account is active"""
+  isActive: Boolean!
+
+  """Last name"""
+  lName: String!
+
+  """Timestamp of the last login"""
+  lastLogin: DateTime
+
+  """User role: admin or user"""
+  role: Role!
+
+  """Stable public UUID for the user"""
+  uuid: String!
+}

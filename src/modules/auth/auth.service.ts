@@ -8,6 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../../prisma/prisma.service';
 import { SignupDto } from './dto/signup.dto';
+import { JwtPayload } from './jwt.strategy';
 
 /**
  * AuthService contains all authentication business logic.
@@ -110,6 +111,71 @@ export class AuthService {
         createdAt: existing.createdAt,
       },
       access_token,
+    };
+  }
+
+  /**
+   * Issues a fresh access token for an already-authenticated user.
+   *
+   * The caller must present a valid (non-expired) Bearer token.
+   * JwtAuthGuard validates the token before this method is invoked,
+   * and attaches the decoded payload to req.user.
+   *
+   * We re-fetch the user from the DB to ensure the account still exists
+   * and to pick up any role changes that happened since the last token was issued.
+   *
+   * @param payload - Decoded JWT payload supplied by JwtAuthGuard via req.user
+   * @returns A fresh access_token
+   */
+  async refreshToken(payload: JwtPayload) {
+    // Re-fetch user to confirm account still exists and get up-to-date role
+    const user = await this.prisma.users.findUnique({
+      where: { uuid: payload.sub },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('User account no longer exists');
+    }
+
+    const newPayload: JwtPayload = {
+      sub: user.uuid,
+      email: user.email,
+      role: user.role,
+    };
+
+    return {
+      access_token: this.jwtService.sign(newPayload),
+    };
+  }
+
+  /**
+   * Returns the profile of the currently authenticated user.
+   *
+   * The caller must present a valid (non-expired) Bearer token.
+   * JwtAuthGuard validates the token before this method is invoked,
+   * and attaches the decoded payload to req.user.
+   *
+   * We re-fetch the user from the DB to ensure the account still exists
+   * and to pick up any role changes that happened since the last token was issued.
+   *
+   * @param userId - The UUID of the user to retrieve
+   * @returns The profile of the user
+   */
+  async getUser(userId: string) {
+    const user = await this.prisma.users.findUnique({
+      where: { uuid: userId },
+    });
+    if (!user) {
+      throw new UnauthorizedException('User account no longer exists');
+    }
+    return {
+      id: user.id,
+      uuid: user.uuid,
+      fName: user.fName,
+      lName: user.lName,
+      email: user.email,
+      role: user.role,
+      createdAt: user.createdAt,
     };
   }
 }
