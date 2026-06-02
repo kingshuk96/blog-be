@@ -27,7 +27,6 @@ export class UserService {
   }
 
   async getUserById(uuid: string) {
-    console.log(uuid);
     return this.prisma.users.findUnique({ where: { uuid } });
   }
 
