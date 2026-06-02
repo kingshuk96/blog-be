@@ -1,4 +1,4 @@
-import { Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Query, Resolver } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { UserModel } from './models/user.model';
 import { UserService } from './user.service';
@@ -56,5 +56,28 @@ export class UserResolver {
   })
   getUsers() {
     return this.userService.getUsers();
+  }
+
+  @UseGuards(GqlJwtAuthGuard)
+  @Query(() => UserModel, {
+    name: 'getUserById',
+    nullable: true,
+    description:
+      'Returns the profile of the user with the given ID. Requires a valid JWT.',
+  })
+  getUserById(@Args('uuid', { type: () => String }) uuid: string) {
+    return this.userService.getUserById(uuid);
+  }
+
+  @UseGuards(GqlJwtAuthGuard)
+  @Query(() => UserModel, {
+    name: 'getProfile',
+    nullable: true,
+    description:
+      'Returns the profile of the logged-in user. Requires a valid JWT.',
+  })
+  getProfile(@Context() context: { req: { user: { userId: string } } }) {
+    const userId = context.req.user.userId;
+    return this.userService.getCurrentUser(userId);
   }
 }

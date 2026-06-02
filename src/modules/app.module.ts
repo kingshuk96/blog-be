@@ -41,6 +41,7 @@ import { UserModule } from './user/user.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
       playground: true,
+      path: 'api/v1/graphql',
     }),
 
     UserModule, // getUsers, getUser, me, updateUser, deactivateUser
