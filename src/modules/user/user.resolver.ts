@@ -1,8 +1,9 @@
-import { Args, Context, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { UserModel } from './models/user.model';
 import { UserService } from './user.service';
 import { GqlJwtAuthGuard } from '../../guards/gql-jwt-auth.guard';
+import { UpdateUserInput } from './dto/update-user.input';
 
 /**
  * UserResolver — the GraphQL equivalent of a REST Controller.
@@ -79,5 +80,53 @@ export class UserResolver {
   getProfile(@Context() context: { req: { user: { userId: string } } }) {
     const userId = context.req.user.userId;
     return this.userService.getCurrentUser(userId);
+  }
+
+  /**
+   * @Mutation registers this method as a GraphQL Mutation.
+   *
+   * A Mutation is used for write operations (create / update / delete),
+   * just like POST/PUT/PATCH/DELETE in REST.
+   *
+   * SELF-UPDATE PATTERN:
+   * The caller's UUID is extracted from the JWT context — NOT from the
+   * mutation arguments. This guarantees a user can only ever update
+   * their own profile, even if they try to pass a different uuid.
+   *
+   * Example client call:
+   *   mutation {
+   *     updateUser(input: { fName: "Jane", lName: "Smith" }) {
+   *       uuid
+   *       fName
+   *       lName
+   *     }
+   *   }
+   */
+  @UseGuards(GqlJwtAuthGuard)
+  @Mutation(() => UserModel, {
+    name: 'updateUser',
+    description:
+      'Updates the profile of the currently authenticated user (fName, lName). ' +
+      'The user is identified from the Bearer JWT — you cannot update another user. ' +
+      'Requires a valid JWT.',
+  })
+  updateUser(
+    @Args('input') input: UpdateUserInput,
+    @Context() context: { req: { user: { userId: string } } }
+  ) {
+    const userId = context.req.user.userId;
+    return this.userService.updateUser(userId, input);
+  }
+  @UseGuards(GqlJwtAuthGuard)
+  @Mutation(() => UserModel, {
+    name: 'deactivateUser',
+    description:
+      'Deactivates the account of the currently authenticated user. ' +
+      'The user is identified from the Bearer JWT — no UUID argument needed. ' +
+      'Requires a valid JWT.',
+  })
+  deactivateUser(@Context() context: { req: { user: { userId: string } } }) {
+    const userId = context.req.user.userId;
+    return this.userService.deactivateUser(userId);
   }
 }

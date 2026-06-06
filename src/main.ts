@@ -44,6 +44,15 @@ async function bootstrap() {
     )
     .addTag('Health', 'API health-check endpoint')
     .addTag('Auth', 'User registration and authentication')
+    .addTag(
+      'GraphQL — Users',
+      'GraphQL query documentation for user operations.\n\n' +
+        '> ⚠️ **All real requests must be sent to `POST /graphql`** — ' +
+        'the endpoints listed here are documentation stubs only.\n\n' +
+        'Each entry shows the exact query string, variable shape, and expected response. ' +
+        'Copy the request body from "Example Value" and POST it to `/graphql` ' +
+        'with an `Authorization: Bearer <jwt>` header.'
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { UpdateUserInput } from './dto/update-user.input';
 
 /**
  * UserService contains all USER-related business logic.
@@ -32,5 +33,18 @@ export class UserService {
 
   async getCurrentUser(uuid: string) {
     return this.prisma.users.findUnique({ where: { uuid } });
+  }
+
+  async updateUser(uuid: string, data: UpdateUserInput) {
+    return this.prisma.users.update({
+      where: { uuid },
+      data,
+    });
+  }
+  async deactivateUser(uuid: string) {
+    return this.prisma.users.update({
+      where: { uuid },
+      data: { isActive: false },
+    });
   }
 }

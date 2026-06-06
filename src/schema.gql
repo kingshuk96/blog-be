@@ -7,6 +7,18 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Mutation {
+  """
+  Deactivates the account of the currently authenticated user. The user is identified from the Bearer JWT — no UUID argument needed. Requires a valid JWT.
+  """
+  deactivateUser: UserModel!
+
+  """
+  Updates the profile of the currently authenticated user (fName, lName). The user is identified from the Bearer JWT — you cannot update another user. Requires a valid JWT.
+  """
+  updateUser(input: UpdateUserInput!): UserModel!
+}
+
 type Query {
   """Returns the profile of the logged-in user. Requires a valid JWT."""
   getProfile: UserModel
@@ -24,6 +36,15 @@ type Query {
 enum Role {
   admin
   user
+}
+
+"""Fields that can be updated on the current user profile"""
+input UpdateUserInput {
+  """New first name"""
+  fName: String
+
+  """New last name"""
+  lName: String
 }
 
 """Represents a user in the system"""

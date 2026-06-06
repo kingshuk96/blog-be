@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
 import { UserResolver } from './user.resolver';
 import { UserService } from './user.service';
+import { UserGraphqlController } from './user-graphql.controller';
 
 /**
  * UserModule groups all user-related pieces together.
  *
  * NestJS uses modules as the unit of organization:
  *   - providers   → services, resolvers — things NestJS creates & manages
- *   - controllers → REST controllers (we have none here, only a GraphQL resolver)
+ *   - controllers → REST controllers (UserGraphqlController is a Swagger doc shim)
  *   - imports     → other modules this module depends on
  *   - exports     → providers that other modules can use
  *
@@ -21,6 +22,9 @@ import { UserService } from './user.service';
  *   is already bootstrapped, Passport can find the 'jwt' strategy globally.
  */
 @Module({
+  controllers: [
+    UserGraphqlController, // Swagger documentation shim — not a real REST controller
+  ],
   providers: [
     UserResolver, // registers the GraphQL queries defined in UserResolver
     UserService, // business logic — injected into UserResolver
