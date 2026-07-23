@@ -11,7 +11,7 @@ import { Field, InputType } from '@nestjs/graphql';
  *
  * This class defines the shape of the `input` argument clients send:
  *   mutation {
- *     updateUser(input: { fName: "Jane" }) { ... }
+ *     updateUser(input: { fName: "Kingshuk" }) { ... }
  *   }
  *
  * PARTIAL UPDATE:

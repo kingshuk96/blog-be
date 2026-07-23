@@ -19,7 +19,7 @@ export class UserResponseDto {
   @ApiProperty({ example: 'John', description: 'First name' })
   fName: string;
 
-  @ApiProperty({ example: 'Doe', description: 'Last name' })
+  @ApiProperty({ example: 'Sahu', description: 'Last name' })
   lName: string;
 
   @ApiProperty({

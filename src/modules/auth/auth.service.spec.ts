@@ -38,7 +38,7 @@ describe('AuthService', () => {
 
   const signupDto: SignupDto = {
     fName: 'John',
-    lName: 'Doe',
+    lName: 'Sahu',
     email: 'john@example.com',
     password: 'Secret123',
   };
@@ -48,7 +48,7 @@ describe('AuthService', () => {
     id: 'fake-mongo-id',
     uuid: 'fake-uuid',
     fName: 'John',
-    lName: 'Doe',
+    lName: 'Sahu',
     email: 'john@example.com',
     password: 'hashed-password',
     role: 'user',

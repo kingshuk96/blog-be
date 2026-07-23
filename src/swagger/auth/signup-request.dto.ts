@@ -13,7 +13,7 @@ export class SignupRequestDto {
   fName: string;
 
   @ApiProperty({
-    example: 'Doe',
+    example: 'Sahu',
     description: 'Last name of the user',
     minLength: 1,
   })

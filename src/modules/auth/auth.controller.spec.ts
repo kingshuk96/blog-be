@@ -20,7 +20,7 @@ describe('AuthController', () => {
 
   const signupDto: SignupDto = {
     fName: 'John',
-    lName: 'Doe',
+    lName: 'Sahu',
     email: 'john@example.com',
     password: 'Secret123',
   };
@@ -29,7 +29,7 @@ describe('AuthController', () => {
     id: 'fake-mongo-id',
     uuid: 'fake-uuid',
     fName: 'John',
-    lName: 'Doe',
+    lName: 'Sahu',
     email: 'john@example.com',
     role: 'user',
     createdAt: new Date(),

@@ -76,7 +76,7 @@ describe('UserService', () => {
     id: 'mongo-object-id-abc123',
     uuid: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
     fName: 'John',
-    lName: 'Doe',
+    lName: 'Sahu',
     email: 'john@example.com',
     password: 'hashed-password', // present in DB but never returned by the API
     role: 'user',
@@ -202,14 +202,14 @@ describe('UserService', () => {
   describe('updateUser()', () => {
     // The input a client would send in the mutation
     const updateInput: UpdateUserInput = {
-      fName: 'Jane',
+      fName: 'Kingshuk',
       lName: 'Smith',
     };
 
     // What Prisma returns after a successful update
     const updatedUser = {
       ...mockUser, // spread all existing fields
-      fName: 'Jane', // overwrite with the new values
+      fName: 'Kingshuk', // overwrite with the new values
       lName: 'Smith',
       updatedAt: new Date(), // Prisma updates this automatically
     };
@@ -224,7 +224,7 @@ describe('UserService', () => {
 
       // ASSERT 1: The returned value is the updated document Prisma gave us
       expect(result).toEqual(updatedUser);
-      expect(result.fName).toBe('Jane');
+      expect(result.fName).toBe('Kingshuk');
       expect(result.lName).toBe('Smith');
 
       // ASSERT 2: The service called Prisma.update() with the exact right args.
@@ -252,7 +252,7 @@ describe('UserService', () => {
         data: partialInput, // { fName: 'UpdatedFirst' } — no lName key at all
       });
       expect(result.fName).toBe('UpdatedFirst');
-      expect(result.lName).toBe('Doe'); // original lName is untouched
+      expect(result.lName).toBe('Sahu'); // original lName is untouched
     });
 
     it('should apply a partial update when only lName is supplied', async () => {
