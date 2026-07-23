@@ -45,7 +45,7 @@ describe('UserResolver', () => {
     id: 'mongo-id-abc',
     uuid: 'test-uuid-1234',
     fName: 'John',
-    lName: 'Doe',
+    lName: 'Sahu',
     email: 'john@example.com',
     role: 'user',
     isActive: true,
@@ -176,12 +176,12 @@ describe('UserResolver', () => {
   describe('updateUser()', () => {
     // The mutation input the client sends
     const updateInput: UpdateUserInput = {
-      fName: 'Jane',
+      fName: 'Kingshuk',
       lName: 'Smith',
     };
 
     // The updated user Prisma would return
-    const updatedUser = { ...mockUser, fName: 'Jane', lName: 'Smith' };
+    const updatedUser = { ...mockUser, fName: 'Kingshuk', lName: 'Smith' };
 
     // The fake GQL context that carries the JWT payload.
     // In a real request, GqlJwtAuthGuard runs JwtStrategy.validate() which
@@ -208,7 +208,7 @@ describe('UserResolver', () => {
 
       // ASSERT 1: The result is whatever the service returned
       expect(result).toEqual(updatedUser);
-      expect(result.fName).toBe('Jane');
+      expect(result.fName).toBe('Kingshuk');
       expect(result.lName).toBe('Smith');
 
       // ASSERT 2: The resolver passed BOTH the userId (from JWT) AND the input

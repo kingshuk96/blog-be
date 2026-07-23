@@ -11,7 +11,10 @@ import {
   GetUserByIdQueryDto,
   GetUsersQueryDto,
 } from '../../swagger/graphql/graphql-user-queries.dto';
-import { UpdateUserMutationDto } from '../../swagger/graphql/graphql-user-mutations.dto';
+import {
+  DeactivateUserMutationDto,
+  UpdateUserMutationDto,
+} from '../../swagger/graphql/graphql-user-mutations.dto';
 
 /**
  * UserGraphqlController — Swagger documentation shim for GraphQL user queries.
@@ -82,9 +85,9 @@ export class UserGraphqlController {
             {
               id: '507f1f77bcf86cd799439011',
               uuid: '550e8400-e29b-41d4-a716-446655440000',
-              fName: 'Jane',
-              lName: 'Doe',
-              email: 'jane@example.com',
+              fName: 'Kingshuk',
+              lName: 'Sahu',
+              email: 'king@gmail.com',
               role: 'user',
               isActive: true,
               createdAt: '2024-01-15T08:30:00.000Z',
@@ -144,9 +147,9 @@ export class UserGraphqlController {
           getUserById: {
             id: '507f1f77bcf86cd799439011',
             uuid: '550e8400-e29b-41d4-a716-446655440000',
-            fName: 'Jane',
-            lName: 'Doe',
-            email: 'jane@example.com',
+            fName: 'Kingshuk',
+            lName: 'Sahu',
+            email: 'king@gmail.com',
             role: 'user',
             isActive: true,
             createdAt: '2024-01-15T08:30:00.000Z',
@@ -206,9 +209,9 @@ export class UserGraphqlController {
           getProfile: {
             id: '507f1f77bcf86cd799439011',
             uuid: '550e8400-e29b-41d4-a716-446655440000',
-            fName: 'Jane',
-            lName: 'Doe',
-            email: 'jane@example.com',
+            fName: 'Kingshuk',
+            lName: 'Sahu',
+            email: 'king@gmail.com',
             role: 'admin',
             isActive: true,
             createdAt: '2024-01-15T08:30:00.000Z',
@@ -256,7 +259,7 @@ export class UserGraphqlController {
       '  }\n' +
       '}\n' +
       '```\n\n' +
-      '**Variables:** `{ "input": { "fName": "Jane", "lName": "Smith" } }` — all fields optional.\n\n' +
+      '**Variables:** `{ "input": { "fName": "Kingshuk", "lName": "Smith" } }` — all fields optional.\n\n' +
       '**Required:** `Authorization: Bearer <jwt>` header.',
   })
   @ApiBody({ type: UpdateUserMutationDto })
@@ -269,9 +272,9 @@ export class UserGraphqlController {
           updateUser: {
             id: '507f1f77bcf86cd799439011',
             uuid: '550e8400-e29b-41d4-a716-446655440000',
-            fName: 'Jane',
+            fName: 'Kingshuk',
             lName: 'Smith',
-            email: 'jane@example.com',
+            email: 'king@gmail.com',
             role: 'user',
             isActive: true,
             createdAt: '2024-01-15T08:30:00.000Z',
@@ -287,6 +290,68 @@ export class UserGraphqlController {
     description: 'User not found (account was deleted).',
   })
   updateUser(): void {
+    // Documentation stub — no implementation.
+  }
+
+  // ─── deactivateUser ────────────────────────────────────────────────────────
+
+  /**
+   * Documentation stub for the `deactivateUser` GraphQL mutation.
+   *
+   * Real call:  POST /graphql  { "query": "mutation DeactivateUser { deactivateUser { ... } }" }
+   * Identity (uuid) is resolved from the Bearer JWT — no arguments needed.
+   */
+  @Post('deactivate-user')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: "deactivateUser — Deactivate the authenticated user's account",
+    description:
+      '**GraphQL operation: `deactivateUser`**\n\n' +
+      'Sets `isActive: false` on the currently authenticated user. ' +
+      'The user UUID is taken from the Bearer JWT — no argument is needed.\n\n' +
+      '**⚠️ Documentation only** — send the request body shown below to `POST /graphql`, ' +
+      'not to this path.\n\n' +
+      '```graphql\n' +
+      'mutation DeactivateUser {\n' +
+      '  deactivateUser {\n' +
+      '    id\n' +
+      '    uuid\n' +
+      '    fName\n' +
+      '    lName\n' +
+      '    email\n' +
+      '    role\n' +
+      '    isActive\n' +
+      '  }\n' +
+      '}\n' +
+      '```\n\n' +
+      '**Required:** `Authorization: Bearer <jwt>` header.',
+  })
+  @ApiBody({ type: DeactivateUserMutationDto })
+  @ApiResponse({
+    status: 200,
+    description: 'The deactivated UserModel (isActive will be false).',
+    schema: {
+      example: {
+        data: {
+          deactivateUser: {
+            id: '507f1f77bcf86cd799439011',
+            uuid: '550e8400-e29b-41d4-a716-446655440000',
+            fName: 'Kingshuk',
+            lName: 'Sahu',
+            email: 'king@gmail.com',
+            role: 'user',
+            isActive: false,
+          },
+        },
+      },
+    },
+  })
+  @ApiResponse({ status: 401, description: 'Missing or invalid Bearer token.' })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found.',
+  })
+  deactivateUser(): void {
     // Documentation stub — no implementation.
   }
 }

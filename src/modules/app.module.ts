@@ -8,6 +8,7 @@ import { dbConfig } from '../config/db.config';
 import { PrismaModule } from '../prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { BlogModule } from './blog/blog.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { UserModule } from './user/user.module';
     }),
 
     UserModule, // getUsers, getUser, me, updateUser, deactivateUser
+    BlogModule, // createPost
   ],
   controllers: [HealthController],
   providers: [],

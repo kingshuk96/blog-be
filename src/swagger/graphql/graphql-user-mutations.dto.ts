@@ -10,7 +10,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
  *
  *   {
  *     "query": "mutation UpdateUser($input: UpdateUserInput!) { ... }",
- *     "variables": { "input": { "fName": "Jane" } }
+ *     "variables": { "input": { "fName": "Kingshuk" } }
  *   }
  *
  * The user UUID is resolved from the Bearer JWT — no uuid argument needed.
@@ -42,8 +42,8 @@ export class UpdateUserMutationDto {
       'Variables object — include only the fields you want to update. All fields are optional.',
     example: {
       input: {
-        fName: 'Jane',
-        lName: 'Smith',
+        fName: 'Kingshuk',
+        lName: 'Sah',
       },
     },
     type: 'object',

@@ -95,7 +95,7 @@ export class UserResolver {
    *
    * Example client call:
    *   mutation {
-   *     updateUser(input: { fName: "Jane", lName: "Smith" }) {
+   *     updateUser(input: { fName: "Kingshuk", lName: "Smith" }) {
    *       uuid
    *       fName
    *       lName

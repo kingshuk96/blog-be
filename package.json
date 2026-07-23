@@ -18,7 +18,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "prisma:generate": "npx prisma generate",
+    "prisma:generate": "npx prisma generate && node -e \"const fs=require('fs'),f='src/generated/zod/index.ts',c=fs.readFileSync(f,'utf8');if(!c.startsWith('// @ts-nocheck'))fs.writeFileSync(f,'// @ts-nocheck\\n'+c)\"",
     "prisma:push": "npx prisma db push",
     "prisma:studio": "npx prisma studio",
     "prisma:migrate": "npx prisma generate && npx prisma db push",
